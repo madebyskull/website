@@ -106,12 +106,19 @@ interactiveElements.forEach(el => {
     });
 });
 
-// 4. Formular-Absendung (Beispiel-Handling)
+// 4. Formular-Absendung & Validierung
+const errorMessage = document.getElementById('errorMessage');
+
 form.addEventListener('submit', (e) => {
-    // Wir lassen das Standard-Absenden zu, damit Netlify die Mail erhält
-    // Wenn du eine "Danke"-Meldung ohne Seiten-Reload willst, nutzen wir Fetch:
-    e.preventDefault();
-    
+    e.preventDefault(); // Verhindert den Standard-Reload
+
+    // Prüfung: Sind alle Pflichtfelder (Name, E-Mail) korrekt ausgefüllt?
+    if (!form.checkValidity()) {
+        showAppleError();
+        return; // Bricht ab, schickt nichts an Netlify
+    }
+
+    // Wenn alles okay ist: Daten an Netlify senden
     const formData = new FormData(form);
     
     fetch("/", {
@@ -120,10 +127,39 @@ form.addEventListener('submit', (e) => {
         body: new URLSearchParams(formData).toString(),
     })
     .then(() => {
-        // Erfolg: Zeige deine Danke-Meldung
-        const lastStepH2 = steps[currentStep].querySelector('h2');
-        lastStepH2.innerText = "Vielen Dank! Ich melde mich bei dir.";
-        form.querySelector('.submit-btn').style.display = 'none';
+        // Erfolgs-Screen anzeigen (wie besprochen)
+        form.style.display = 'none';
+        document.querySelector('.form-navigation').style.display = 'none';
+        
+        const container = document.querySelector('.contact-container');
+        container.innerHTML = `
+            <div class="form-step active" style="text-align: center;">
+                <span class="step-number">06</span>
+                <h2 style="margin-bottom: 10px;">Vielen Dank!</h2>
+                <p style="font-family: 'degular-mono'; opacity: 0.6; font-size: 16px;">
+                    Deine Nachricht wurde übermittelt.<br>Ich melde mich zeitnah bei dir.
+                </p>
+                <br><br>
+                <a href="index.html" style="color: #fff; text-decoration: underline; font-size: 12px; font-family: 'degular-mono';">Zurück zur Startseite</a>
+            </div>
+        `;
     })
-    .catch((error) => alert(error));
+    .catch((error) => {
+        console.error('Fehler:', error);
+        showAppleError("Server-Fehler. Bitte später versuchen.");
+    });
 });
+
+// Funktion für die rote Apple-Einblendung
+function showAppleError(customText) {
+    if (customText) {
+        errorMessage.querySelector('p').innerText = customText;
+    }
+    
+    errorMessage.classList.add('show-error');
+    
+    // Nach 3 Sekunden automatisch wieder ausblenden
+    setTimeout(() => {
+        errorMessage.classList.remove('show-error');
+    }, 3000);
+}
