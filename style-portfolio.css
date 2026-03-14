@@ -1,0 +1,195 @@
+:root {
+    --bg-color: #000;
+    --text-color: #fff;
+    --accent-color: #aaa;
+    --font-main: "monotalic", sans-serif;
+}
+
+/* 1. Globales Setup & Konsistenz */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+body::-webkit-scrollbar { display: none !important; }
+
+/* 2. Header & Footer (identisch zur Hauptseite) */
+header { 
+    position: fixed; 
+    top: 0; width: 100%; 
+    padding: clamp(20px, 4vw, 40px) clamp(20px, 5vw, 60px); 
+    display: flex; justify-content: center; 
+    z-index: 100; pointer-events: none; 
+}
+
+header nav { 
+    display: flex; align-items: center;
+    gap: clamp(20px, 6vw, 80px); 
+    font-size: clamp(12px, 1.2vw, 14px); 
+    letter-spacing: 1px; pointer-events: auto;
+}
+
+header nav a { color: var(--accent-color) !important; text-decoration: none; transition: color 0.3s ease; cursor: none; }
+header nav a.active, header nav a:hover { color: #fff !important; }
+
+.small-logo { font-weight: 700; white-space: nowrap; }
+
+footer { 
+    width: 100%; 
+    padding: 80px clamp(20px, 5vw, 60px) 40px; 
+    display: flex; justify-content: space-between; 
+    align-items: center; 
+}
+footer p, footer a { color: #555 !important; font-size: clamp(10px, 1vw, 12px); text-decoration: none; cursor: none; }
+
+/* 3. Portfolio Header */
+.portfolio-main {
+    padding: 160px clamp(20px, 8vw, 120px) 100px;
+}
+
+.portfolio-header {
+    margin-bottom: 120px;
+}
+
+.portfolio-header h1 {
+    font-size: clamp(60px, 12vw, 180px);
+    line-height: 0.9;
+    font-weight: 700;
+    letter-spacing: -4px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: clamp(14px, 1.5vw, 18px);
+    color: var(--accent-color);
+    margin-top: 20px;
+    letter-spacing: 2px;
+}
+
+/* 4. Asymmetrisches Work Grid */
+.work-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15vw 5vw; /* Großer vertikaler Abstand für den Editorial Look */
+    align-items: flex-start;
+}
+
+.work-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Bild-Container mit sanftem Zoom-Effekt beim Hover */
+.work-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    background: #111;
+}
+
+.work-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(100%) brightness(0.8);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-item:hover img {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.05);
+}
+
+/* Der Twist: Die Projektnummern schneiden das Bild */
+.work-number {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    font-size: clamp(40px, 5vw, 80px);
+    font-weight: 700;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.2);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+
+.work-info {
+    margin-top: 25px;
+}
+
+.work-info h2 {
+    font-size: clamp(20px, 2.5vw, 32px);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.work-info p {
+    font-size: 12px;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Spezifische Größen für das Editorial Raster */
+.work-item.wide { width: 100%; }
+.work-item.tall { width: 45%; margin-top: -5vh; } /* Hochkant leicht versetzt */
+.work-item.small { width: 35%; margin-left: auto; margin-top: 10vh; } /* Kleines Bild nach rechts geschoben */
+.work-item.standard { width: 60%; margin-left: 10%; }
+
+/* 5. Back to Start CTA */
+.portfolio-footer-cta {
+    margin: 150px 0 100px;
+    text-align: center;
+}
+
+.back-home-link {
+    font-size: clamp(24px, 5vw, 40px);
+    color: var(--accent-color);
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: all 0.4s ease;
+    cursor: none;
+}
+
+.back-home-link:hover {
+    color: #fff;
+    letter-spacing: 8px;
+}
+
+/* 6. Custom Cursor (identisch zur Hauptseite) */
+.cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; z-index: 1000; }
+.cursor-dot { width: 6px; height: 6px; background: #fff; }
+.cursor-ring { width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.4); transition: width 0.3s, height 0.3s; }
+
+/* 7. Animationen */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .work-item.wide, .work-item.tall, .work-item.small, .work-item.standard {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+    }
+    .portfolio-main { padding-top: 120px; }
+    .work-grid { gap: 60px; }
+}

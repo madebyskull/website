@@ -1,0 +1,256 @@
+:root {
+    --bg-color: #000;
+    --text-color: #fff;
+    --nav-inactive: #aaa; /* Gleiches Grau wie auf Index */
+    --footer-inactive: #555;
+    --font-main: "monotalic", sans-serif;
+    --font-mono: "degular-mono", monospace;
+}
+
+/* 1. Globales Setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    height: 100vh;
+    overflow: hidden; /* App-Feeling, kein Scrollen */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 2. Navigation (EXAKT wie auf Index) */
+header { 
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+    padding: clamp(20px, 4vw, 40px) clamp(20px, 5vw, 60px); 
+    display: flex; 
+    justify-content: center; 
+    z-index: 1000; 
+    pointer-events: none; 
+}
+
+header nav { 
+    display: flex; 
+    align-items: center;
+    gap: clamp(20px, 6vw, 80px); 
+    font-size: clamp(12px, 1.2vw, 14px); /* Exakte Index-Größe */
+    letter-spacing: 1px;
+    pointer-events: auto;
+}
+
+header nav a { 
+    color: var(--nav-inactive) !important; 
+    text-decoration: none; 
+    transition: color 0.3s ease; 
+    cursor: none; 
+}
+
+header nav a:hover, header nav a.active { 
+    color: #fff !important; 
+}
+
+.small-logo { 
+    font-weight: 700; 
+    color: #fff !important; 
+    opacity: 1 !important; /* Auf Kontaktseite immer sichtbar */
+}
+
+/* 3. Footer (EXAKT wie auf Index) */
+footer { 
+    position: fixed; 
+    bottom: 0; 
+    width: 100%; 
+    padding: 20px clamp(20px, 5vw, 60px); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    z-index: 1000; 
+    pointer-events: none;
+}
+
+footer p, footer a { 
+    color: var(--footer-inactive) !important; 
+    font-size: clamp(10px, 1vw, 12px); /* Exakte Index-Größe */
+    pointer-events: auto; 
+    text-decoration: none; 
+    cursor: none; 
+}
+
+footer a:hover {
+    color: #fff !important;
+}
+
+/* 4. Progress Bar oben */
+.progress-bar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1100;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 5. Form Container */
+.contact-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10%;
+    z-index: 10;
+}
+
+.step-form {
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+}
+
+.form-step {
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.form-step.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* 6. Step Numbers (01-06 mit dickerer Outline) */
+.step-number {
+    font-size: clamp(60px, 10vw, 120px);
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.7); /* Hellgraue, dicke Outline */
+    margin-bottom: 5px;
+    display: block;
+    line-height: 1;
+    letter-spacing: -2px;
+    user-select: none;
+}
+
+h2 {
+    font-size: clamp(24px, 4vw, 48px);
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 40px;
+    letter-spacing: -1px;
+}
+
+/* 7. Inputs & Textarea (Degular Mono Branding) */
+.input-wrapper {
+    width: 100%;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    transition: border-color 0.4s ease;
+}
+
+.input-wrapper:focus-within {
+    border-color: #fff;
+}
+
+input, textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: var(--font-mono); /* Degular Mono */
+    font-weight: 400;
+    font-size: clamp(18px, 2.5vw, 32px);
+    padding: 10px 0;
+    caret-color: #fff;
+}
+
+input::placeholder, textarea::placeholder {
+    font-family: var(--font-mono);
+    color: rgba(255, 255, 255, 0.2);
+}
+
+textarea {
+    resize: none;
+    overflow: hidden;
+}
+
+/* 8. Navigation Pfeile */
+.form-navigation {
+    position: fixed;
+    bottom: clamp(40px, 10vh, 100px);
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 clamp(20px, 8vw, 120px);
+    pointer-events: none;
+}
+
+.nav-arrow {
+    background: transparent;
+    border: none;
+    color: var(--footer-inactive);
+    cursor: none;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+}
+
+.nav-arrow:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* 9. Absende Button */
+.submit-btn {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 18px 36px;
+    font-family: var(--font-main);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: none;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+}
+
+/* 10. Custom Cursor (Identisch zu Index) */
+.cursor-dot, .cursor-ring { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    border-radius: 50%; 
+    pointer-events: none; 
+    z-index: 10000; 
+}
+
+.cursor-dot { width: 6px; height: 6px; background: #fff; }
+.cursor-ring { 
+    width: 40px; 
+    height: 40px; 
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    transition: width 0.3s, height 0.3s, background-color 0.3s; 
+}

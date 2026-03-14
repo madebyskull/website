@@ -1,0 +1,240 @@
+:root {
+    /* Variablen für den Spotlight-Effekt */
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+}
+
+/* 1. Globales Setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: #000;
+    color: #fff;
+    font-family: "monotalic", sans-serif;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Scrollbar für Chrome/Safari komplett ausblenden */
+body::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* 2. Navigation (Header) */
+header { 
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+    /* Padding passt sich der Bildschirmgröße an */
+    padding: clamp(20px, 4vw, 40px) clamp(20px, 5vw, 60px); 
+    display: flex; 
+    justify-content: center; 
+    z-index: 100; 
+    pointer-events: none; 
+}
+
+header nav { 
+    display: flex; 
+    align-items: center;
+    /* Der Abstand zwischen About, Logo und Portfolio schrumpft dynamisch */
+    gap: clamp(20px, 6vw, 80px); 
+    font-size: clamp(12px, 1.2vw, 14px); 
+    letter-spacing: 1px; 
+    pointer-events: auto;
+}
+
+header nav a { 
+    color: #aaa !important; 
+    text-decoration: none; 
+    transition: color 0.3s ease; 
+    cursor: none; 
+}
+
+header nav a:hover { 
+    color: #fff !important; 
+}
+
+.small-logo {
+    color: #fff !important;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* 3. Footer */
+footer { 
+    position: fixed; 
+    bottom: 0; 
+    width: 100%; 
+    padding: 20px clamp(20px, 5vw, 60px); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    z-index: 10; 
+    pointer-events: none;
+}
+
+footer p, footer a { 
+    color: #555 !important; 
+    font-size: clamp(10px, 1vw, 12px); 
+    pointer-events: auto; 
+    text-decoration: none; 
+    cursor: none; 
+}
+
+/* 4. Scroll Container & Bild Galerie */
+.scroll-container { 
+    position: relative; 
+    width: 100%; 
+    z-index: 1; 
+    scroll-snap-type: y mandatory; 
+}
+
+.top-spacer { 
+    height: 60vh; 
+    scroll-snap-align: start; 
+}
+
+.project-item { 
+    height: 100vh; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    scroll-snap-align: center; 
+    padding: 0 20px; 
+}
+
+.project-item img {
+    width: 100%;
+    max-width: clamp(280px, 75vw, 1000px);
+    height: auto;
+    opacity: 0;
+    will-change: transform, opacity, filter;
+}
+
+/* 5. Der neue Bereich ganz unten (Portfolio-Link) */
+.bottom-spacer {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: end;
+    pointer-events: none; /* Verhindert Blockaden durch den Spacer selbst */
+}
+
+.bottom-portfolio-link {
+    font-size: clamp(24px, 5vw, 40px);
+    letter-spacing: 2px;
+    text-transform: lowercase;
+    color: #aaa !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: none;
+    text-decoration: none;
+    pointer-events: auto; /* Elementar wichtig, damit man klicken/hovern kann */
+}
+
+.bottom-portfolio-link:hover {
+    color: #fff !important;
+    letter-spacing: 8px;
+}
+
+/* 6. Spotlight & Main Content (Der Fix für den Z-Index-Bug liegt hier) */
+main { 
+    position: fixed; 
+    height: 100vh; 
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    top: 0; 
+    left: 0; 
+    pointer-events: none; 
+    z-index: 5; 
+}
+
+.text-wrapper { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 4vh; 
+    transition: opacity 0.2s ease; 
+}
+
+.spotlight-text {
+    font-size: 8vw; 
+    font-weight: 700; 
+    letter-spacing: -1px; 
+    position: relative; 
+    color: rgba(255, 255, 255, 0.12); 
+    /* FIX: pointer-events auf none! 
+       Damit liegt die unsichtbare Schrift unten nicht mehr wie eine 
+       Schutzscheibe über deinem Portfolio-Link. */
+    pointer-events: none; 
+}
+
+.spotlight-text::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; 
+    left: 0;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4);
+    -webkit-mask-image: radial-gradient(circle 15vw at var(--mouse-x) var(--mouse-y), #000 0%, transparent 100%);
+    mask-image: radial-gradient(circle 15vw at var(--mouse-x) var(--mouse-y), #000 0%, transparent 100%);
+}
+
+.scroll-indicator { 
+    opacity: 0.6; 
+    animation: bounce 2s infinite; 
+    pointer-events: none;
+}
+
+@keyframes bounce { 
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 
+    40% { transform: translateY(-10px); } 
+    60% { transform: translateY(-5px); } 
+}
+
+/* 7. Custom Cursor */
+.cursor-dot, .cursor-ring { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    border-radius: 50%; 
+    pointer-events: none; 
+    z-index: 1000; 
+}
+
+.cursor-dot { 
+    width: 6px; 
+    height: 6px; 
+    background: #fff; 
+}
+
+.cursor-ring { 
+    width: 40px; 
+    height: 40px; 
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    transition: width 0.3s, height 0.3s; 
+}
+
+/* Mobile Fallback: Deaktiviert Maske und Custom Cursor auf Touch-Geräten */
+@media (hover: none) {
+    .cursor-dot, .cursor-ring { 
+        display: none; 
+    }
+    .spotlight-text::before { 
+        -webkit-mask-image: none; 
+        mask-image: none; 
+        color: #fff; 
+        opacity: 0.9; 
+    }
+}
