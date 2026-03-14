@@ -151,15 +151,19 @@ form.addEventListener('submit', (e) => {
 });
 
 // Funktion für die rote Apple-Einblendung
+// Suche deine showAppleError Funktion und ersetze sie:
 function showAppleError(customText) {
+    const errorMessage = document.getElementById('errorMessage');
+    
     if (customText) {
         errorMessage.querySelector('p').innerText = customText;
     }
     
+    // Sichtbar machen
     errorMessage.classList.add('show-error');
     
-    // Nach 3 Sekunden automatisch wieder ausblenden
+    // Nach 4 Sekunden wieder verstecken
     setTimeout(() => {
         errorMessage.classList.remove('show-error');
-    }, 3000);
+    }, 4000);
 }
