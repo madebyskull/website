@@ -258,48 +258,29 @@ textarea {
    11. ERROR MESSAGE (APPLE STYLE)
    ========================================================================== */
 .error-message-popup {
-    position: fixed;
-    top: clamp(80px, 10vh, 120px); /* Positioniert sich elegant unter dem Header */
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px) scale(0.95);
-    background: rgba(20, 20, 20, 0.8); /* Sehr dunkles Grau, fast transparent */
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 69, 58, 0.3); /* Dezenter roter Rand */
-    color: #ff453a; /* Original Apple System-Rot */
-    padding: 12px 24px;
-    border-radius: 30px; /* Pillen-Form */
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--font-main);
-    font-size: clamp(12px, 1.2vw, 14px);
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Typische Apple-Animation */
-    z-index: 3000;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 69, 58, 0.1);
-}
-
-/* Diese Klasse wird per JS hinzugefügt, wenn ein Fehler auftritt */
-.error-message-popup.show-error {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-}
-
-.error-icon {
-    background: #ff453a;
-    color: #000;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
+    margin-top: 20px; /* Abstand unter dem Button */
+    display: none;    /* Standardmäßig komplett weg */
     justify-content: center;
     align-items: center;
-    font-weight: 900;
+    color: #ff453a;   /* Apple Red */
+    font-family: var(--font-mono); /* Degular Mono für den technischen Look */
     font-size: 14px;
-    line-height: 1;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+}
+
+/* Wenn ein Fehler vorliegt, wird diese Klasse per JS hinzugefügt */
+.error-message-popup.show-error {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Optional: Ein kleines Icon davor, falls du das '!' behalten willst */
+.error-message-popup::before {
+    content: "!";
+    margin-right: 8px;
+    font-weight: bold;
 }
 
