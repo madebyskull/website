@@ -25,10 +25,7 @@
             <div class="progress-bar" id="progressBar"></div>
         </div>
 
-        <div id="errorMessage" class="error-message-popup">
-            <span class="error-icon">!</span>
-            <p>Bitte fülle alle erforderlichen Felder korrekt aus.</p>
-        </div>
+        
 
         <form id="stepForm" class="step-form" name="contact" method="POST" data-netlify="true">
             
@@ -78,6 +75,10 @@
                 <span class="step-number">06</span>
                 <h2>Bereit zum Absenden?</h2>
                 <button type="submit" class="submit-btn">Nachricht schicken</button>
+
+                <div id="errorMessage" class="error-message-popup">
+                    <p>Bitte fülle alle erforderlichen Felder korrekt aus.</p>
+                </div>
             </div>
         </form>
 
