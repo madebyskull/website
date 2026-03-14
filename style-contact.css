@@ -253,7 +253,7 @@ textarea {
     height: 40px; 
     border: 1px solid rgba(255, 255, 255, 0.4); 
     transition: width 0.3s, height 0.3s, background-color 0.3s; 
-
+}
 /* ==========================================================================
    11. ERROR MESSAGE (APPLE STYLE)
    ========================================================================== */
@@ -302,4 +302,4 @@ textarea {
     font-size: 14px;
     line-height: 1;
 }
-}
+
