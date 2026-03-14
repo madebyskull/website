@@ -258,29 +258,26 @@ textarea {
    11. ERROR MESSAGE (APPLE STYLE)
    ========================================================================== */
 .error-message-popup {
-    margin-top: 20px; /* Abstand unter dem Button */
-    display: none;    /* Standardmäßig komplett weg */
+    display: none; /* WICHTIG: Komplett weg vom Fenster */
+    margin-top: 20px;
+    color: #ff453a;
+    font-family: var(--font-mono);
+    font-size: 13px;
     justify-content: center;
     align-items: center;
-    color: #ff453a;   /* Apple Red */
-    font-family: var(--font-mono); /* Degular Mono für den technischen Look */
-    font-size: 14px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.4s ease;
+    gap: 8px;
+    width: 100%;
+    text-align: center;
 }
 
-/* Wenn ein Fehler vorliegt, wird diese Klasse per JS hinzugefügt */
+/* Nur wenn diese Klasse durch JS hinzugefügt wird, erscheint sie */
 .error-message-popup.show-error {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
+    display: flex; 
+    animation: fadeInError 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Optional: Ein kleines Icon davor, falls du das '!' behalten willst */
-.error-message-popup::before {
-    content: "!";
-    margin-right: 8px;
-    font-weight: bold;
+@keyframes fadeInError {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
