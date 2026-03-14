@@ -110,15 +110,24 @@ interactiveElements.forEach(el => {
 const errorMessage = document.getElementById('errorMessage');
 
 form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Verhindert den Standard-Reload
+    e.preventDefault(); // Verhindert das Neuladen
 
-    // Prüfung: Sind alle Pflichtfelder (Name, E-Mail) korrekt ausgefüllt?
+    const errorMessage = document.getElementById('errorMessage');
+
+    // 1. Validierung prüfen (Name & E-Mail ausgefüllt?)
     if (!form.checkValidity()) {
-        showAppleError();
-        return; // Bricht ab, schickt nichts an Netlify
+        // FEHLER-FALL:
+        errorMessage.classList.add('show-error');
+        
+        // Nach 4 Sekunden wieder verstecken
+        setTimeout(() => {
+            errorMessage.classList.remove('show-error');
+        }, 4000);
+        
+        return; // HIER STOPPEN: Der Final-Screen wird NICHT aufgerufen.
     }
 
-    // Wenn alles okay ist: Daten an Netlify senden
+    // 2. ERFOLGS-FALL: Wenn alles okay ist, Daten an Netlify senden
     const formData = new FormData(form);
     
     fetch("/", {
@@ -127,7 +136,7 @@ form.addEventListener('submit', (e) => {
         body: new URLSearchParams(formData).toString(),
     })
     .then(() => {
-        // Erfolgs-Screen anzeigen (wie besprochen)
+        // Erst jetzt, nach erfolgreichem Senden, zeigen wir den Final-Screen
         form.style.display = 'none';
         document.querySelector('.form-navigation').style.display = 'none';
         
@@ -146,7 +155,6 @@ form.addEventListener('submit', (e) => {
     })
     .catch((error) => {
         console.error('Fehler:', error);
-        showAppleError("Server-Fehler. Bitte später versuchen.");
     });
 });
 
