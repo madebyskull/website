@@ -133,7 +133,7 @@ form.addEventListener('submit', (e) => {
     // --- NEUER WEB3FORMS CODE START ---
 
 // 1. Deinen Key zur E-Mail hinzufügen
-formData.append("access_key", "DEIN-ACCESS-KEY-AUS-DER-EMAIL"); 
+formData.append("access_key", "ee3af827-2f81-4fb7-812e-217d3f8e7970"); 
 formData.append("subject", "Neue Anfrage über dein Portfolio!");
 
 // 2. An Web3Forms senden
