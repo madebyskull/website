@@ -1,8 +1,9 @@
 /**
  * JONA DOMKE - Contact Form Script
- * Handling: Step-by-Step Navigation, Enter-Key & Custom Cursor
+ * Handling: Step-by-Step Navigation, Enter-Key, Custom Cursor & Web3Forms Integration
  */
 
+// --- 1. INITIALISIERUNG ---
 const steps = document.querySelectorAll('.form-step');
 const nextBtn = document.getElementById('nextBtn');
 const prevBtn = document.getElementById('prevBtn');
@@ -16,22 +17,26 @@ let currentStep = 0;
 let mouseX = 0, mouseY = 0;
 let ringX = 0, ringY = 0;
 
-// 1. Formular-Logik: Update der Ansicht
+// --- 2. FORMULAR-NAVIGATION ---
+
+/**
+ * Aktualisiert die Anzeige des Formulars basierend auf dem aktuellen Schritt
+ */
 function updateForm() {
-    // Schritte umschalten
+    // Sichtbarkeit der Schritte umschalten
     steps.forEach((step, index) => {
         step.classList.toggle('active', index === currentStep);
     });
 
-    // Progress Bar berechnen
+    // Fortschrittsbalken berechnen
     const progress = ((currentStep) / (steps.length - 1)) * 100;
     progressBar.style.width = `${progress}%`;
 
-    // Button-Sichtbarkeit
+    // "Zurück"-Button ein/ausblenden
     prevBtn.style.opacity = currentStep === 0 ? "0" : "1";
     prevBtn.style.pointerEvents = currentStep === 0 ? "none" : "auto";
     
-    // "Weiter"-Pfeil beim letzten Schritt (Absenden) verstecken
+    // "Weiter"-Button am Ende verstecken (da dort der Senden-Button im HTML liegt)
     if (currentStep === steps.length - 1) {
         nextBtn.style.opacity = "0";
         nextBtn.style.pointerEvents = "none";
@@ -40,14 +45,14 @@ function updateForm() {
         nextBtn.style.pointerEvents = "auto";
     }
 
-    // Automatisch das Input-Feld im neuen Schritt fokussieren
+    // Fokus auf das nächste Input-Feld setzen
     const currentInput = steps[currentStep].querySelector('input, textarea');
     if (currentInput) {
         setTimeout(() => currentInput.focus(), 400);
     }
 }
 
-// 2. Navigation Events
+// Event-Listener für Klicks
 nextBtn.addEventListener('click', () => {
     if (currentStep < steps.length - 1) {
         currentStep++;
@@ -62,34 +67,44 @@ prevBtn.addEventListener('click', () => {
     }
 });
 
-// Mit "Enter" zur nächsten Frage springen
+// Tastatur-Support: Mit Enter zum nächsten Schritt
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-        // Verhindern, dass das Formular zu früh abschickt
+        // Nur wenn wir nicht im letzten Schritt sind
         if (currentStep < steps.length - 1) {
-            e.preventDefault();
+            e.preventDefault(); // Verhindert frühzeitiges Absenden
             currentStep++;
             updateForm();
         }
     }
 });
 
-// 3. Custom Cursor Logik (Konsistent zur Hauptseite)
+// --- 3. CUSTOM CURSOR LOGIK ---
+
 document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+    
+    if (cursorDot) {
+        cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+    }
 });
 
+/**
+ * Flüssige Animation für den äußeren Cursor-Ring
+ */
 function animateCursor() {
     ringX += (mouseX - ringX) * 0.12;
     ringY += (mouseY - ringY) * 0.12;
-    cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+    
+    if (cursorRing) {
+        cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+    }
     requestAnimationFrame(animateCursor);
 }
 animateCursor();
 
-// Cursor-Interaktion für Buttons und Links
+// Interaktionseffekte für den Cursor
 const interactiveElements = document.querySelectorAll('a, button, input, textarea');
 interactiveElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
@@ -106,87 +121,78 @@ interactiveElements.forEach(el => {
     });
 });
 
-// 4. Formular-Absendung & Validierung
-const errorMessage = document.getElementById('errorMessage');
+// --- 4. VALIDIERUNG & ABSENDEN (WEB3FORMS) ---
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Verhindert das Neuladen
-
-    const errorMessage = document.getElementById('errorMessage');
-
-    // 1. Validierung prüfen (Name & E-Mail ausgefüllt?)
-    if (!form.checkValidity()) {
-        // FEHLER-FALL:
-        errorMessage.classList.add('show-error');
-        
-        // Nach 4 Sekunden wieder verstecken
-        setTimeout(() => {
-            errorMessage.classList.remove('show-error');
-        }, 4000);
-        
-        return; // HIER STOPPEN: Der Final-Screen wird NICHT aufgerufen.
-    }
-
-    // 2. ERFOLGS-FALL: Wenn alles okay ist, Daten an Netlify senden
-    const formData = new FormData(form);
-    
-    // --- NEUER WEB3FORMS CODE START ---
-
-// 1. Deinen Key zur E-Mail hinzufügen
-formData.append("access_key", "ee3af827-2f81-4fb7-812e-217d3f8e7970"); 
-formData.append("subject", "Neue Anfrage über dein Portfolio!");
-
-// 2. An Web3Forms senden
-fetch("https://api.web3forms.com/submit", {
-    method: "POST",
-    body: formData,
-    headers: {
-        'Accept': 'application/json'
-    }
-})
-.then(response => {
-    if (response.ok) {
-        // Erfolg: Verstecke das Formular und die Navigation
-        form.style.display = 'none';
-        document.querySelector('.form-navigation').style.display = 'none';
-
-        // Zeige deinen Erfolgs-Screen
-        const container = document.querySelector('.contact-container');
-        container.innerHTML = `
-            <div class="form-step active" style="text-align: center;">
-                <span class="step-number">06</span>
-                <h2 style="margin-bottom: 10px;">Vielen Dank!</h2>
-                <p style="font-family: 'degular-mono'; opacity: 0.6; font-size: 16px;">
-                    Deine Nachricht wurde übermittelt.<br>Ich melde mich zeitnah bei dir.
-                </p>
-                <br><br>
-                <a href="index.html" style="color: #fff; text-decoration: underline; font-size: 12px; font-family: 'degular-mono';">Zurück zur Startseite</a>
-            </div>
-        `;
-    } else {
-        alert("Hoppla! Da gab es ein Problem beim Senden.");
-    }
-})
-.catch(error => {
-    alert("Netzwerkfehler. Bitte versuche es später erneut.");
-});
-
-// --- NEUER WEB3FORMS CODE ENDE ---
-
-// Funktion für die rote Apple-Einblendung
-// Suche deine showAppleError Funktion und ersetze sie:
+/**
+ * Zeigt die rote Apple-Style Fehlermeldung an
+ */
 function showAppleError(customText) {
     const errorMessage = document.getElementById('errorMessage');
-    
-    if (customText) {
+    if (customText && errorMessage.querySelector('p')) {
         errorMessage.querySelector('p').innerText = customText;
     }
     
-    // Sichtbar machen
     errorMessage.classList.add('show-error');
     
-    // Nach 4 Sekunden wieder verstecken
     setTimeout(() => {
         errorMessage.classList.remove('show-error');
     }, 4000);
 }
+
+// Das eigentliche Absenden des Formulars
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // 1. Check ob Felder leer sind
+    if (!form.checkValidity()) {
+        showAppleError("Bitte fülle alle Felder korrekt aus.");
+        return;
+    }
+
+    // 2. Daten sammeln
+    const formData = new FormData(form);
+    
+    // Web3Forms Konfiguration hinzufügen
+    formData.append("access_key", "ee3af827-2f81-4fb7-812e-217d3f8e7970"); 
+    formData.append("subject", "Neue Anfrage über jonadomke.de");
+    formData.append("from_name", "Portfolio Kontaktformular");
+
+    // 3. Daten absenden (AJAX / Fetch)
+    fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(async (response) => {
+        if (response.ok) {
+            // ERFOLG: Formular ausblenden
+            form.style.display = 'none';
+            document.querySelector('.form-navigation').style.display = 'none';
+
+            // Erfolgs-Bildschirm anzeigen
+            const container = document.querySelector('.contact-container');
+            container.innerHTML = `
+                <div class="form-step active" style="text-align: center;">
+                    <span class="step-number">06</span>
+                    <h2 style="margin-bottom: 10px;">Vielen Dank!</h2>
+                    <p style="font-family: 'degular-mono'; opacity: 0.6; font-size: 16px;">
+                        Deine Nachricht wurde erfolgreich übermittelt.<br>Ich melde mich zeitnah bei dir.
+                    </p>
+                    <br><br>
+                    <a href="index.html" class="back-link" style="color: #fff; text-decoration: underline; font-size: 12px; font-family: 'degular-mono'; cursor: pointer;">
+                        Zurück zur Startseite
+                    </a>
+                </div>
+            `;
+        } else {
+            // Fehler vom Server
+            showAppleError("Senden fehlgeschlagen. Bitte versuche es später erneut.");
+        }
+    })
+    .catch(error => {
+        // Netzwerkfehler
+        showAppleError("Netzwerkfehler. Hast du eine aktive Internetverbindung?");
+    });
+});
