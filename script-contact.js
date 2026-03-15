@@ -130,16 +130,27 @@ form.addEventListener('submit', (e) => {
     // 2. ERFOLGS-FALL: Wenn alles okay ist, Daten an Netlify senden
     const formData = new FormData(form);
     
-    fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData).toString(),
-    })
-    .then(() => {
-        // Erst jetzt, nach erfolgreichem Senden, zeigen wir den Final-Screen
+    // --- NEUER WEB3FORMS CODE START ---
+
+// 1. Deinen Key zur E-Mail hinzufügen
+formData.append("access_key", "DEIN-ACCESS-KEY-AUS-DER-EMAIL"); 
+formData.append("subject", "Neue Anfrage über dein Portfolio!");
+
+// 2. An Web3Forms senden
+fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData,
+    headers: {
+        'Accept': 'application/json'
+    }
+})
+.then(response => {
+    if (response.ok) {
+        // Erfolg: Verstecke das Formular und die Navigation
         form.style.display = 'none';
         document.querySelector('.form-navigation').style.display = 'none';
-        
+
+        // Zeige deinen Erfolgs-Screen
         const container = document.querySelector('.contact-container');
         container.innerHTML = `
             <div class="form-step active" style="text-align: center;">
@@ -152,11 +163,15 @@ form.addEventListener('submit', (e) => {
                 <a href="index.html" style="color: #fff; text-decoration: underline; font-size: 12px; font-family: 'degular-mono';">Zurück zur Startseite</a>
             </div>
         `;
-    })
-    .catch((error) => {
-        console.error('Fehler:', error);
-    });
+    } else {
+        alert("Hoppla! Da gab es ein Problem beim Senden.");
+    }
+})
+.catch(error => {
+    alert("Netzwerkfehler. Bitte versuche es später erneut.");
 });
+
+// --- NEUER WEB3FORMS CODE ENDE ---
 
 // Funktion für die rote Apple-Einblendung
 // Suche deine showAppleError Funktion und ersetze sie:
